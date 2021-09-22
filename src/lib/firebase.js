@@ -12,7 +12,8 @@ const storageBucket = process.env.REACT_APP_FIREBASE_STORAGEBUCKET;
 const messagingSenderId = process.env.REACT_APP_FIREBASE_MESSSENDID;
 const appId =  process.env.REACT_APP_FIREBASE_APPID;
 
-
+//change below to what is in .env file when pushing 
+//firebase is not accepting the .env variables as regular variables or string template variables
 const config = { 
     apiKey: `${apiKey}`,
     authDomain: `${authDomain}`,
