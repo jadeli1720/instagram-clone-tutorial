@@ -35,7 +35,7 @@ export default function SignUp() {
 					});
 
 					// firebase user collection (create a document)
-					await firebase.firestore().collection('user').add({
+					await firebase.firestore().collection('users').add({
 						userId: createdUserResult.user.uid,
 						username : username.toLowerCase(),
 						fullname,
