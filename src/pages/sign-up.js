@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import FirebaseContext from "../context/firebase";
 import * as ROUTES from "../constants/routes";
+import { doesUsernameExist } from "../services/firebase";
 
 export default function SignUp() {
     const [username, setUsername] = useState("");
@@ -18,16 +19,44 @@ export default function SignUp() {
 	const handleSignUp = async (event) => {
 		event.preventDefault();
 
-		try {
-			// await firebase
-			// 	.auth()
-			// 	.signInWithEmailAndPassword(emailAddress, password);
-			// history.push(ROUTES.DASHBOARD);
-		} catch (error) {
-			// setEmailAddress("");
-			// setPassword("");
-			// setError(error.message);
+		//checking to see if username already exists in the db
+		const usernameExists = await doesUsernameExist(username);
+
+		if (!usernameExists) {
+			try {
+				const createdUserResult = await firebase
+					.auth()
+					.createUserWithEmailAndPassword(emailAddress, password)
+					
+					// authentication
+						// -> emailAddress & password & username (displayName)
+					await createdUserResult.user.updateProfile({
+						displayName: username
+					});
+
+					// firebase user collection (create a document)
+					await firebase.firestore().collection('user').add({
+						userId: createdUserResult.user.uid,
+						username : username.toLowerCase(),
+						fullname,
+						emailAddress: emailAddress.toLowerCase(),
+						following: [],
+						dateCreated: Date.now()
+					})
+
+					history.push(ROUTES.DASHBOARD);
+
+			} catch (error) {
+				setFullname("");
+				setEmailAddress("");
+				setPassword("");
+				setError(error.message);
+			}
+		} else {
+			setUsername('');
+			setError('That username is already taken, please try another.');
 		}
+
 	};
 
 	useEffect(() => {
@@ -112,7 +141,7 @@ export default function SignUp() {
 					<p className="text-sm">
 						Have an account?{` `}
 						<Link
-							to="/login"
+							to={ROUTES.LOGIN} 
 							className="font-bold text-blue-medium"
 						>
 							Log In

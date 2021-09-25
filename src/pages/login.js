@@ -88,7 +88,7 @@ export default function Login() {
 					<p className="text-sm">
 						Don't have and account?{` `}
 						<Link
-							to="/signup"
+							to={ROUTES.SIGN_UP}
 							className="font-bold text-blue-medium"
 						>
 							Sign up
