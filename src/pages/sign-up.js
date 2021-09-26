@@ -2,8 +2,11 @@ import { useState, useContext, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import FirebaseContext from "../context/firebase";
 import * as ROUTES from "../constants/routes";
+import { doesUsernameExist } from "../services/firebase";
 
-export default function Login() {
+export default function SignUp() {
+    const [username, setUsername] = useState("");
+    const [fullname, setFullname] = useState("");
 	const [emailAddress, setEmailAddress] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
@@ -13,23 +16,51 @@ export default function Login() {
 
 	const isInvalid = password === "" || emailAddress === "";
 
-	const handleLogin = async (event) => {
+	const handleSignUp = async (event) => {
 		event.preventDefault();
 
-		try {
-			await firebase
-				.auth()
-				.signInWithEmailAndPassword(emailAddress, password);
-			history.push(ROUTES.DASHBOARD);
-		} catch (error) {
-			setEmailAddress("");
-			setPassword("");
-			setError(error.message);
+		//checking to see if username already exists in the db
+		const usernameExists = await doesUsernameExist(username);
+
+		if (!usernameExists) {
+			try {
+				const createdUserResult = await firebase
+					.auth()
+					.createUserWithEmailAndPassword(emailAddress, password)
+					
+					// authentication
+						// -> emailAddress & password & username (displayName)
+					await createdUserResult.user.updateProfile({
+						displayName: username
+					});
+
+					// firebase user collection (create a document)
+					await firebase.firestore().collection('users').add({
+						userId: createdUserResult.user.uid,
+						username : username.toLowerCase(),
+						fullname,
+						emailAddress: emailAddress.toLowerCase(),
+						following: [],
+						dateCreated: Date.now()
+					})
+
+					history.push(ROUTES.DASHBOARD);
+
+			} catch (error) {
+				setFullname("");
+				setEmailAddress("");
+				setPassword("");
+				setError(error.message);
+			}
+		} else {
+			setUsername('');
+			setError('That username is already taken, please try another.');
 		}
+
 	};
 
 	useEffect(() => {
-		document.title = "Login - Instagram";
+		document.title = "Sign Up - Instagram";
 	}, []);
 
 	return (
@@ -55,7 +86,27 @@ export default function Login() {
 						</p>
 					)}
 
-					<form onSubmit={handleLogin} method="POST">
+					<form onSubmit={handleSignUp} method="POST">
+					<input
+							aria-label="Enter your username"
+							type="text"
+							placeholder="Username"
+							className="text-sm text-gray-base w-full mr-3 py-5 px-4 h-2 border border-gray-primary rounded mb-2"
+							onChange={({ target }) =>
+								setUsername(target.value)
+							}
+							value={username}
+						/>
+						<input
+							aria-label="Enter your full name"
+							type="text"
+							placeholder="Full name"
+							className="text-sm text-gray-base w-full mr-3 py-5 px-4 h-2 border border-gray-primary rounded mb-2"
+							onChange={({ target }) =>
+								setFullname(target.value)
+							}
+							value={fullname}
+						/>						
 						<input
 							aria-label="Enter your email address"
 							type="text"
@@ -64,34 +115,36 @@ export default function Login() {
 							onChange={({ target }) =>
 								setEmailAddress(target.value)
 							}
-                            value={emailAddress}
+							value={emailAddress}
 						/>
+						{/*  value={emailAddress} */}
 						<input
 							aria-label="Enter your password"
 							type="password"
 							placeholder="Password"
 							className="text-sm text-gray-base w-full mr-3 py-5 px-4 h-2 border border-gray-primary rounded mb-2"
 							onChange={({ target }) => setPassword(target.value)}
-                            value={password}
+							value={password}
 						/>
+						{/*  value={password} */}
 						<button
 							disabled={isInvalid}
 							type="submit"
 							className={`bg-blue-medium text-white w-full rounded h-8 font-bold
                             ${isInvalid && "opacity-50"}`}
 						>
-							Log In
+							Sign Up
 						</button>
 					</form>
 				</div>
 				<div className="flex justify-center items-center flex-col w-full bg-white p-4 rounded border border-gray-primary">
 					<p className="text-sm">
-						Don't have and account?{` `}
+						Have an account?{` `}
 						<Link
-							to={ROUTES.SIGN_UP}
+							to={ROUTES.LOGIN} 
 							className="font-bold text-blue-medium"
 						>
-							Sign up
+							Log In
 						</Link>
 					</p>
 				</div>
