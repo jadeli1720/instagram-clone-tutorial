@@ -8,16 +8,14 @@ export default function useUser() {
     const { user } = useContext(UserContext);
 
     useEffect(() => {
-        async function getUserObjByYserId() {
+        async function getUserObjByUserId() {
             // need a function that we can call (firebase service) that gets user data by id
-            const response = await getUserByUserId(user.uid)
-            setActiveUser(response)
+            const [response] = await getUserByUserId(user.uid);
+            setActiveUser(response);
         }
 
         if (user?.uid) {
-            getUserObjByYserId() 
-        } else {
-
+            getUserObjByUserId(); 
         }
 
     }, [user]);
