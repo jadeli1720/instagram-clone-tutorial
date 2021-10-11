@@ -41,10 +41,6 @@ export async function getSuggestedProfiles(userId, following) {
 		);
 }
 
-export async function updateFollowerdUserFollowers(spDocId, userId) {
-	// return
-}
-
 //This function will allow a user to toggle to follow/unfollow other profiles
 export async function updateLoggedInUserFollowing(
 	loggedInUserDocId, // currently logged in user document id (my profile)
@@ -53,11 +49,28 @@ export async function updateLoggedInUserFollowing(
 ) {
 	return firebase
 		.firestore()
-		.collection("user")
+		.collection("users")
 		.doc(loggedInUserDocId)
 		.update({
 			following: isFollowingProfile
 				? FieldValue.arrayRemove(profileId) //if following, remove from array
 				: FieldValue.arrayUnion(profileId), // if not following, add to the array
+		});
+}
+
+//This function updates the profiles of those the currently logged in user (I) have chosen to follow/unfollow
+export async function updateFollowedUserFollowers(
+	profileDocId, 
+	loggedInUserDocId, 
+	isFollowingProfile
+) {
+	return firebase
+		.firestore()
+		.collection("users")
+		.doc(profileDocId)
+		.update({
+			followers: isFollowingProfile
+				? FieldValue.arrayRemove(loggedInUserDocId)
+				: FieldValue.arrayUnion(loggedInUserDocId),
 		});
 }

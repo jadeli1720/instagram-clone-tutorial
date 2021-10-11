@@ -20,6 +20,8 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
 		// console.log("profiles:", profiles);
 	}, [userId]);
 
+	
+
 	return !profiles ? (
 		<Skeleton count={1} height={150} className="mt-5" />
 	) : profiles.length > 0 ? (
@@ -30,8 +32,8 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
 			<div className="mt-4 grid gap-5">
 				{profiles.map((profile) => (
 					<SuggestedProfile
-						key={profile.docId}
-						spDocId={profile.docId}
+						key={profile.doc}
+						profileDocId={profile.docId}
 						username={profile.username}
 						profileId={profile.userId}
 						userId={userId}

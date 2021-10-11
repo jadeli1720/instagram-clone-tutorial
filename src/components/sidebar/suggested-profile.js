@@ -1,10 +1,9 @@
 import { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { updateFollowerdUserFollowers, updateLoggedInUserFollowing } from '../../services/firebase'
+import { updateFollowedUserFollowers, updateLoggedInUserFollowing } from '../../services/firebase'
 
 export default function SuggestedProfile({
-	spDocId,
 	profileDocId,
 	username,
 	profileId,
@@ -16,12 +15,12 @@ export default function SuggestedProfile({
 	async function handleFollowUser() {
 		setFollowed(true);
 
-		//firebase: create 2 services (functions)
+
 		// update the following array of the logged in user (my profile in this case)
 		await updateLoggedInUserFollowing(loggedInUserDocId, profileId, false)
-		
+
 		// update the followers array of the user who has been followed
-		await updateFollowerdUserFollowers(spDocId, userId)
+		await updateFollowedUserFollowers(profileDocId, userId, false)
 	}
 
 	const capitalize = (string) => {
@@ -56,7 +55,7 @@ export default function SuggestedProfile({
 }
 
 SuggestedProfile.propTypes = {
-	spDocId: PropTypes.string.isRequired,
+	profileDocId: PropTypes.string,
 	username: PropTypes.string.isRequired,
 	profileId: PropTypes.string.isRequired,
 	userId: PropTypes.string.isRequired,
