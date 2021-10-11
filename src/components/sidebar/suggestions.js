@@ -17,8 +17,9 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
 			suggestedProfiles();
 		}
 
-		// console.log("profiles:", profiles);
 	}, [userId]);
+
+	//NOTE: In the tutorial verion, the key and profileDocId were both equal to profile.docId. HOWEVER, the key docId does not exist as of 10/10/21. It is now just doc.
 
 	
 
@@ -33,7 +34,7 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
 				{profiles.map((profile) => (
 					<SuggestedProfile
 						key={profile.doc}
-						profileDocId={profile.docId}
+						profileDocId={profile.doc}
 						username={profile.username}
 						profileId={profile.userId}
 						userId={userId}
