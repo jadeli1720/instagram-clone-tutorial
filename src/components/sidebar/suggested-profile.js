@@ -1,14 +1,21 @@
-import { useContext, useState } from "react";
+import { useContext,  useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-export default function SuggestedProfile({
-	profileDocId,
-	username,
-	profileId,
-	userId,
-}) {
+export default function SuggestedProfile({  spDocId, profileDocId,username, profileId, userId, loggedInUserdocId}) {
 	const [followed, setFollowed] = useState(false);
+
+	async function handleFollowUser() {
+		setFollowed(true);
+
+		//firebase: create 2 services (functions)
+		// update the following array of the logged in user (my profile in this case)
+		// update the followers array of the user who has been followed
+	}
+
+	const capitalize = (string) => {
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	};
 
 	return !followed ? (
 		<div className="flex flex-row items-center align-items justify-between ">
@@ -28,10 +35,18 @@ export default function SuggestedProfile({
 			<button
 				className="text-xs font-bold text-blue-medium"
 				type="button"
-				// onClick={handleFollowUser}
+				// onClick={() => console.log(`Follow ${capitalize(username)}`)}
+				onClick={handleFollowUser}
 			>
 				Follow
 			</button>
 		</div>
 	) : null;
 }
+
+SuggestedProfile.propTypes = {
+	spDocId: PropTypes.string.isRequired,
+	username: PropTypes.string.isRequired,
+	profileId: PropTypes.string.isRequired,
+	userId: PropTypes.string.isRequired,
+};

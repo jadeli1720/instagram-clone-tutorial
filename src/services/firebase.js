@@ -37,3 +37,4 @@ export async function getSuggestedProfiles(userId, following) {
         .map((user) => ({ ...user.data(), doc: user.id}))
         .filter((profile) => profile.userId !== userId && !following.includes(profile.userId))
 }
+
