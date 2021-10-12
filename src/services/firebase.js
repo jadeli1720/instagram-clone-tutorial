@@ -82,10 +82,13 @@ export async function getPhotos (userId, following) {
         .where('userId', 'in', following)
         .get();
 
-    const userFollowedPhotos = result.doc.map((photo) => ({
+    const userFollowedPhotos = result.docs.map((photo) => ({
         ...photo.data(),
         docId: photo.id
     }));
+
+    //checking if there are any photos
+    // console.log('userFollowedPhotos', userFollowedPhotos);
 
     //this is a way of doing async await within a map!
     const photoWithUserDetails = await Promise.all(

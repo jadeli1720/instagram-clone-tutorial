@@ -11,19 +11,23 @@ export default function usePhotos(user) {
     
     useEffect(() => {
         async function getTimelinePhotos() {
-            const { following } = await getUserByUserId(userId);
+            const [{ following }] = await getUserByUserId(userId);
             let followedUserPhotos = [];
 
             //is the user following anyone
             if(following.length > 0){
                 followedUserPhotos = await getPhotos(userId, following)
             }
+
+            //making sure that the newest photos come first
+            followedUserPhotos.sort((a,b) => b.dateCreated - a.dateCreated);
+            setPhotos(followedUserPhotos);
         }
 
         // console.log("from use-photos hook:",userId);
         getTimelinePhotos();
 
-    }, [])
+    }, [userId])
 
     return { photos }
 }
