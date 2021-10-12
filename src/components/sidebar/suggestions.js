@@ -19,7 +19,7 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
 
 	}, [userId]);
 
-	//NOTE: In the tutorial verion, the key and profileDocId were both equal to profile.docId. HOWEVER, the key docId does not exist as of 10/10/21. It is now just doc.
+	//NOTE: In the tutorial file version, the key and profileDocId were both equal to profile.docId. HOWEVER, the key docId does not exist as of 10/10/21. It is now just doc.
 
 	
 
