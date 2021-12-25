@@ -21,8 +21,6 @@ export default function Suggestions({ userId, following, loggedInUserDocId }) {
 
 	//NOTE: In the tutorial file version, the key and profileDocId were both equal to profile.docId. HOWEVER, the key docId does not exist as of 10/10/21. It is now just doc.
 
-	
-
 	return !profiles ? (
 		<Skeleton count={1} height={150} className="mt-5" />
 	) : profiles.length > 0 ? (
