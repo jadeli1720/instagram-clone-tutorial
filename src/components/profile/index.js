@@ -21,18 +21,18 @@ export default function UserProfile({ user }) {
 
     useEffect(() => {
         async function getProfileInfoAndPhotos() {
-
             const photos = await getUserPhotosByUserId(user.userId)
+            
             dispatch({
-                profile:user, 
+                profile: user, 
                 photosCollection: photos, 
                 followerCount: user.followers.length
             });
         }
-
         getProfileInfoAndPhotos()
     },[user.username])
 
+    console.log("profile", profile)
     return (
         <>
             <Header
@@ -42,19 +42,18 @@ export default function UserProfile({ user }) {
                 setFollowerCount={dispatch}
             />
             <Photos photos={photosCollection} />
-            <p>Hello {user.username}</p>
         </>
     )
 }
 
 UserProfile.propTypes = {
     user: PropTypes.shape({
-        dateCreated: PropTypes.number.isRequired,
-        emailAddress: PropTypes.string.isRequired,
-        followers: PropTypes.array.isRequired,
-        following: PropTypes.array.isRequired,
-        fullName: PropTypes.string.isRequired,
-        userId: PropTypes.string.isRequired,
-        username: PropTypes.string.isRequired
-    }).isRequired
+        dateCreated: PropTypes.number,
+        emailAddress: PropTypes.string,
+        followers: PropTypes.array,
+        following: PropTypes.array,
+        fullName: PropTypes.string,
+        userId: PropTypes.string,
+        username: PropTypes.string
+    })
 }

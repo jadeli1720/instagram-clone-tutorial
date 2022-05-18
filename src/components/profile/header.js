@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/img-redundant-alt */
+
 import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Skeleton from "react-loading-skeleton";
@@ -20,8 +20,9 @@ export default function Header({
 		username: profileUsername,
 	},
 }) {
-    const { user } = useUser();
-	const [isFollowingProfile, setIsFollowingProfile] = useState(false);
+    const{ user: loggedInUser } = useContext(UserContext);
+    const { user } = useUser(loggedInUser?.uid);
+	const [isFollowingProfile, setIsFollowingProfile] = useState(null);
     const activeBtnFollow = user?.username && user?.username !== profileUsername;
 
     const handleToggleFollow = async () => {
@@ -29,7 +30,9 @@ export default function Header({
         setFollowerCount({
             followerCount: isFollowingProfile ? followerCount - 1 : followerCount + 1
         });
-    }
+
+        await toggleFollow(isFollowingProfile, user.docId, profileDocId, profileUserId, user.userId);
+    };
 
     useEffect(() => {
         const isLoggedInUserFollowingProfile = async () => {
@@ -41,7 +44,8 @@ export default function Header({
             isLoggedInUserFollowingProfile();
         };
 
-    }, [user.username, profileUserId]);
+    }, [user?.username, profileUserId]);
+
 
 	return (
         <div className="grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg">
@@ -49,7 +53,7 @@ export default function Header({
                 {profileUsername ? (
                     <img 
                     className="rounded-full h-40 w40 flex"
-                    alt={`${fullName} profile picture`}
+                    alt={`${fullName}`}
                     src={`/images/avatars/${profileUsername}.jpg`}
                 />
                 ) : (
@@ -98,7 +102,8 @@ export default function Header({
                     )}
                 </div>
                 <div className="container mt-4" >
-                    <p className="font-medium" >{!fullName ? <Skeleton count={1} height={24} />: fullName }</p>
+                    {/* fullName is undefined for the logged in users profile. Don't know why */}
+                    <p className="font-medium" >{!fullName ? <Skeleton count={1} height={24} /> : fullName }</p>
                 </div>
             </div>
         </div>

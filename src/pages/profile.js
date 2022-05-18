@@ -9,17 +9,15 @@ import UserProfile from "../components/profile";
 export default function Profile() {
     const { username } = useParams();
     const [user, setUser] = useState(null);
-    const [ userExists, setUserExist ] = useState(false);
     const history = useHistory();
     
 
     useEffect(() => {
         async function checkUserExists() {
-            const user = await getUserByUsername(username);
-            // console.log('doest user exist', doesUserExist)
-            if (user.length > 0) {
-                setUser(user[0]);
-                setUserExist(true);
+            const [user] = await getUserByUsername(username);
+            // console.log('does user exist', user)
+            if (user?.userId) {
+                setUser(user);
             } else {
                 history.push(ROUTES.NOT_FOUND)
             }

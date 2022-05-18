@@ -50,7 +50,7 @@ export default function Photos({ photos }) {
 									</p>
 								</div>
 							</div>
-					  ))
+					))
 					: null}
 			</div>
 			{!photos ||
